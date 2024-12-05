@@ -1,0 +1,99 @@
+/*Dashboard.html*/
+
+/* Align the search bar to the centre of the page in the nav*/
+.navbar-search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%; /* Width adjustment of the size of the nav bar*/
+}
+
+/* Style for the nav search bar*/
+.navbar-search .form-control {
+    flex-grow: 1;
+}
+
+/* Padding around nav bar */
+.navbar-nav .nav-item .nav-link {
+    padding: 0.6rem 1.4rem;
+}
+
+/* Uni of Leeds Logo*/
+.navbar-logo {
+    width: 110px;
+    height: auto;
+    border-radius: 5px; /* Round Corners, Reference: https://www.google.com/search?q=how+to+round+corners+in+css&rlz=1C5CHFA_enSG1059SG1059&oq=how+to+round+corners+in+css&gs_lcrp=EgZjaHJvbWUyCQgAEEUYORiABDIICAEQABgWGB4yCAgCEAAYFhgeMggIAxAAGBYYHjINCAQQABiGAxiABBiKBTINCAUQABiGAxiABBiKBTINCAYQABiGAxiABBiKBTINCAcQABiGAxiABBiKBTIKCAgQABiABBiiBDIKCAkQABiABBiiBNIBCDUyMzNqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8#fpstate=ive&vld=cid:c6bd4051,vid:a-YLTjHl8gI,st:0, Adpated how to round corners for a box*/
+}
+
+/* Logout button */
+.logout-button {
+    border: 2px solid #dc3545; 
+    padding: 0.1rem 0.8rem; 
+    border-radius: 0.25rem; 
+    text-decoration: none; 
+    transition: background-color 0.3s, color 0.3s; /* Hover transition effect */
+}
+
+/* Fill with full red when hover over Logout button */
+.logout-button:hover {
+    background-color: #dc3545; /* Danger color on hover */
+    color: #fff; /* White text on hover */
+}
+
+/* Date in posts */
+.post-date {
+    font-size: 0.9rem; /* Adjust font size */
+    color: #60666c; /* Keep the muted text color */
+  }
+  
+/**/
+
+
+/*profile.html*/
+
+/* Separator Line */
+.separator {
+    height: 1px;
+    background-color: #ddd;
+    border: none;
+    margin: 2rem 0; /* Adds space above and below */
+  }
+  
+
+
+
+
+/*home.html*/
+
+/* Center the page */
+.page-center {
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height view */
+    margin: 0;
+  }
+  
+  /* Card style */
+  .login-card {
+    max-width: 400px; 
+    width: 100%;
+    border-radius: 12px; /* Rounding the corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow around the box edges*/
+    background-color: #ffffff; 
+    border: none; 
+  }
+  
+  /* Card header box */
+  .login-card-header {
+    background-color: #343a40;
+    color: #ffffff;
+    text-align: center;
+    padding: 15px;
+    border-radius: 12px 12px 0 0;
+  }
+  
+
+  

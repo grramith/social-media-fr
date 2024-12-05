@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Search Results for "{{ query }}"</h2>
+
+        <!-- Matching Users -->
+        <div class="mt-4">
+            <h3>Matching Users</h3>
+            <ul class="list-group">
+                {% if users %}
+                    {% for user in users %}
+                        <li class="list-group-item">
+                            <a href="/profile/{{ user.id }}">{{ user.name }}</a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item">No matching users found.</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- Matching Posts -->
+        <div class="mt-4">
+            <h3>Matching Posts</h3>
+            <ul class="list-group">
+                {% if posts %}
+                    {% for post in posts %}
+                        <li class="list-group-item">
+                            <div>
+                                <h5 class="card-title">
+                                    <a href="/profile/{{ post.user.id }}" class="text-primary font-weight-bold text-decoration-none">{{ post.user.name }}</a>
+                                    <small class="text-muted">({{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }})</small>
+                                </h5>
+                                <span>{{ post.content }}</span>
+                                <small class="text-muted d-block">{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item">No matching posts found.</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- Comments matching -->
+        <div class="mt-4">
+            <h3>Matching Comments</h3>
+            <ul class="list-group">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <li class="list-group-item">
+                            <div>
+                                <strong>
+                                    <!-- Link to the user's profile who made the comments -->
+                                    <a href="/profile/{{ comment.user.id }}">{{ comment.user.name }}</a>
+                                </strong> commented on 
+                                <strong>
+                                    <!-- Link to the post user's profile -->
+                                    <a href="/profile/{{ comment.post.user.id }}">Post by {{ comment.post.user.name }}</a>
+                                </strong>:
+                                
+                                <span>{{ comment.content }}</span>
+                                <small class="text-muted d-block">{{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item">No matching comments found.</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- Back to Dashboard -->
+        <div class="mt-4">
+            <a href="/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+    
+{% endblock %}
