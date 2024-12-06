@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.error) {
                 alert(data.error);
             } else {
-                // Update the like and dislike counts dynamically
+                // Update the like and dislike_counters dynamically
                 document.getElementById(`like-count-${postId}`).textContent = data.like_count;
-                document.getElementById(`dislike-count-${postId}`).textContent = data.dislike_count;
+                document.getElementById(`dislike-count-${postId}`).textContent = data.dislike_counter;
             }
         })
         .catch(error => console.error('Error:', error));
@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.error) {
                 alert(data.error);
             } else {
-                // Update the like and dislike counts dynamically
+                // Update the like and dislike_counters dynamically
                 document.getElementById(`like-count-${postId}`).textContent = data.like_count;
-                document.getElementById(`dislike-count-${postId}`).textContent = data.dislike_count;
+                document.getElementById(`dislike-count-${postId}`).textContent = data.dislike_counter;
             }
         })
         .catch(error => console.error('Error:', error));
@@ -59,14 +59,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(data.error);
             } else {
                 // Dynamically adding the new comment to the comment list
-                const commentList = document.getElementById(`comment-list-${postId}`);
+                const comment_list = document.getElementById(`comment-list-${postId}`);
                 const newComment = document.createElement('li');
                 newComment.className = 'list-group-item';
                 newComment.innerHTML = `
                     <b>${data.user}:</b> ${data.content}
                     <small class="text-muted d-block">${data.created_at}</small>
                 `;
-                commentList.appendChild(newComment); // Append the new comment to the list
+                comment_list.appendChild(newComment); // Append the new comment to the list
                 this.querySelector('input[name="content"]').value = ''; // Clear input
             }
         })

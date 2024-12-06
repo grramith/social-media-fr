@@ -1,4 +1,4 @@
-/*Dashboard.html*/
+/*Dashboard.html and base.html */ 
 
 /* Align the search bar to the centre of the page in the nav*/
 .navbar-search {
@@ -37,14 +37,14 @@
 
 /* Fill with full red when hover over Logout button */
 .logout-button:hover {
-    background-color: #dc3545; /* Danger color on hover */
-    color: #fff; /* White text on hover */
+    background-color: #dc3545; /* Fill of red on hover */
+    color: #fff; 
 }
 
 /* Date in posts */
 .post-date {
-    font-size: 0.9rem; /* Adjust font size */
-    color: #60666c; /* Keep the muted text color */
+    font-size: 0.9rem; 
+    color: #60666c;
   }
   
 /**/

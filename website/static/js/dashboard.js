@@ -1,3 +1,9 @@
+// Handle post filter change
+document.getElementById('post-filter').addEventListener('change', function () {
+    const filter = this.value;
+    window.location.href = `/dashboard?filter=${filter}`;
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     // Select all like and dislike buttons
     const likeButtons = document.querySelectorAll(".like-button");
@@ -19,13 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.error) {
                         alert(data.error);
                     } else {
-                        // Updating like and dislike counts dynamically
+                        // Updating like and dislike_counters dynamically
                         document.getElementById(
                             `like-count-${postId}`
                         ).textContent = data.like_count;
                         document.getElementById(
                             `dislike-count-${postId}`
-                        ).textContent = data.dislike_count;
+                        ).textContent = data.dislike_counter;
                     }
                 })
                 .catch((error) => console.error("Error:", error));
@@ -48,13 +54,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.error) {
                         alert(data.error);
                     } else {
-                        // Updating like and dislike counts dynamically
+                        // Updating like and dislike_counters dynamically
                         document.getElementById(
                             `like-count-${postId}`
                         ).textContent = data.like_count;
                         document.getElementById(
                             `dislike-count-${postId}`
-                        ).textContent = data.dislike_count;
+                        ).textContent = data.dislike_counter;
                     }
                 })
                 .catch((error) => console.error("Error:", error));
@@ -63,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Handle comment form submission
     const commentForms = document.querySelectorAll(".comment-form");
-
     commentForms.forEach((form) => {
         form.addEventListener("submit", function (event) {
             event.preventDefault();
@@ -91,10 +96,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         alert(data.error);
                     } else {
                         // Update the comment list dynamically
-                        const commentList = document.getElementById(
+                        const comment_list = document.getElementById(
                             `comment-list-${postId}`
                         );
-                        commentList.innerHTML = ""; // Clear existing comments
+                        comment_list.innerHTML = ""; // Clear existing comments
 
                         data.comments.forEach(
                             ({
@@ -105,10 +110,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                 is_owner,
                                 is_post_owner,
                             }) => {
-                                const commentItem = document.createElement(
+                                const comment_items = document.createElement(
                                     "li"
                                 );
-                                commentItem.className =
+                                comment_items.className =
                                     "list-group-item d-flex justify-content-between align-items-center";
 
                                 // Create comment content
@@ -123,66 +128,27 @@ document.addEventListener("DOMContentLoaded", function () {
                                         : ""
                                 }
                             `;
-                                commentItem.innerHTML = commentContent;
-                                commentList.appendChild(commentItem);
+                                comment_items.innerHTML = commentContent;
+                                comment_list.appendChild(comment_items);
                             }
                         );
 
                         contentInput.value = ""; // Clear the input field
-                        bindDeleteCommentButtons(); // Rebind delete functionality to new buttons, such as new comments
+                        binding_delete_comment_button(); // Rebind delete functionality to new buttons, such as new comments
                     }
                 })
                 .catch((error) => console.error("Error:", error));
         });
     });
 
-    // Handle comment deletion
-    const deleteCommentButtons = document.querySelectorAll(
-        ".delete-comment-button"
-    );
-
-    deleteCommentButtons.forEach((button) => {
-        // Add click event to each delete button
-        button.addEventListener("click", function () {
-            const commentId = this.dataset.commentId;
-            const postId = this.dataset.postId; // Retrieve the post ID from the dataset
-
-            // Confimation before deletion
-            if (confirm("Are you sure you want to delete this comment?")) {
-                // Send DELETE request to the server
-                fetch(`/delete_comment/${commentId}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.error) {
-                            alert(data.error);
-                        } else {
-                            // Remove the comment from the server
-                            const commentList = document.getElementById(
-                                `comment-list-${postId}`
-                            );
-                            // Dynamically remove the comment
-                            const commentItem = button.closest("li");
-                            commentList.removeChild(commentItem);
-                        }
-                    })
-                    .catch((error) => console.error("Error:", error)); // Logging any server errors
-            }
-        });
-    });
-
     // Bind delete functionality to delete buttons, to make sure that the server removes the commits from the database
     // Reference: https://stackoverflow.com/questions/73574757/how-to-make-useable-delete-button-to-delete-comments, Adapted create a delete button that works when the page refreshs out
-    const bindDeleteCommentButtons = () => {
-        const deleteCommentButtons = document.querySelectorAll(
+    const binding_delete_comment_button = () => {
+        const delete_comment_button = document.querySelectorAll(
             ".delete-comment-button"
         );
 
-        deleteCommentButtons.forEach((button) => {
+        delete_comment_button.forEach((button) => {
             button.addEventListener("click", function () {
                 const commentId = this.dataset.commentId;
                 const postId = this.dataset.postId;
@@ -204,11 +170,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             alert(data.error);
                         } else {
                             // Remove the comment from the sever/DOM
-                            const commentList = document.getElementById(
+                            const comment_list = document.getElementById(
                                 `comment-list-${postId}`
                             );
-                            const commentItem = button.closest("li");
-                            commentList.removeChild(commentItem); // Remove the comment from the comments list
+                            const comment_items = button.closest("li");
+                            comment_list.removeChild(comment_items); // Remove the comment from the comments list
                         }
                     })
                     .catch((error) => console.error("Error:", error));
@@ -217,5 +183,5 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     // Initial binding of delete buttons- allowing users to delete when the page loads in
-    bindDeleteCommentButtons();
+    binding_delete_comment_button();
 });

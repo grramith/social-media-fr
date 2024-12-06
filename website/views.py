@@ -22,24 +22,25 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    # Check if all the credentials match
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
         input_password = request.form['password']
         confirm_password = request.form['confirm_password']
 
-        # Validate passwords
+        # Validate passwords, if dont match then return
         if input_password != confirm_password:
             flash("Passwords do not match.", "danger")
             return render_template('register.html')
 
-        # Check if the email is already registered
+        # Check if the email is already registered (preventing same email registering in the db)
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash("Email is already registered.", "danger")
             return render_template('register.html')
 
-        # Create new user and hash password section
+        # Create new user and hash password section (storing the password hashed)
         new_user = User(name=name, email=email)
         new_user.set_password(input_password)
         db.session.add(new_user)
@@ -53,6 +54,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    #retrieve credentials from form (user input)
     if request.method == 'POST':
         email = request.form.get('email')  # Getting form data
         password = request.form.get('password')
@@ -74,9 +76,6 @@ def login():
 @app.route('/profile')
 @login_required
 def profile():
-    if 'email' not in session:
-        return redirect('/login')
-
     user = User.query.filter_by(email=session['email']).first()
     return render_template('profile.html', user=user)
 
@@ -94,7 +93,7 @@ def logout():
 def change_password():
     user = User.query.filter_by(email=session['email']).first()
 
-    # Get form data
+    # Get form data (user input data)
     current_password = request.form['current_password']
     new_password = request.form['new_password']
     confirm_password = request.form['confirm_password']
@@ -125,9 +124,6 @@ def change_password():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    if 'email' not in session:
-        return redirect('/login')
-
     current_user = User.query.filter_by(email=session['email']).first()
 
     # Handle new post submission
@@ -157,9 +153,6 @@ pass
 @app.route('/like/<int:post_id>', methods=['POST'])
 @login_required
 def like_post(post_id):
-    if 'email' not in session:
-        return jsonify({'error': 'Unauthorized like'}), 401
-
     user = User.query.filter_by(email=session['email']).first()
     post = Post.query.get_or_404(post_id)
 
@@ -174,18 +167,15 @@ def like_post(post_id):
 
     db.session.commit()
 
-    # Returning updated like and dislike counts
+    # Returning updated like and dislike_counters
     like_count = len(post.liked_by)
-    dislike_count = len(post.disliked_by)
-    return jsonify({'like_count': like_count, 'dislike_count': dislike_count})
+    dislike_counter = len(post.disliked_by)
+    return jsonify({'like_count': like_count, 'dislike_counter': dislike_counter})
 pass
 
 @app.route('/dislike/<int:post_id>', methods=['POST'])
 @login_required
 def dislike_post(post_id):
-    if 'email' not in session:
-        return jsonify({'error': 'Unauthorized dislike'}), 401
-
     user = User.query.filter_by(email=session['email']).first()
     post = Post.query.get_or_404(post_id)
 
@@ -200,18 +190,15 @@ def dislike_post(post_id):
 
     db.session.commit()
 
-    # Return updated like and dislike counts
+    # Return updated like and dislike_counters
     like_count = len(post.liked_by)
-    dislike_count = len(post.disliked_by)
-    return jsonify({'like_count': like_count, 'dislike_count': dislike_count})
+    dislike_counter = len(post.disliked_by)
+    return jsonify({'like_count': like_count, 'dislike_counter': dislike_counter})
 pass
 
 @app.route('/comment/<int:post_id>', methods=['POST'])
 @login_required
 def comment_post(post_id):
-    if 'email' not in session:
-        return jsonify({'error': 'Unauthorized access. Please log in to comment on this post.'}), 401
-
     user = User.query.filter_by(email=session['email']).first()
     post = Post.query.get_or_404(post_id)
 
@@ -245,9 +232,6 @@ pass
 @app.route('/delete_comment/<int:comment_id>', methods=['DELETE'])
 @login_required
 def delete_comment(comment_id):
-    if 'email' not in session:
-        return jsonify({'error': 'Unauthorized access to delete comment.'}), 401
-
     user = User.query.filter_by(email=session['email']).first()
     comment = Comment.query.get_or_404(comment_id)
 
@@ -263,9 +247,6 @@ pass
 @app.route('/search', methods=['GET'])
 @login_required
 def search():
-    if 'email' not in session:
-        return redirect('/login')
-
     query = request.args.get('query', '').strip()
 
     if not query:
@@ -283,6 +264,7 @@ pass
 
 @app.route('/profile/<int:user_id>')
 @login_required
+# Fetch user details and render the profile page
 def user_profile(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('user_profile.html', user=user)
@@ -291,10 +273,8 @@ pass
 
 @app.route('/follow/<int:user_id>', methods=['POST'])
 @login_required
+#Handle follow/unfollow user actions
 def follow_user(user_id):
-    if 'email' not in session:
-        return jsonify({'error': 'Unauthorized, cannot follow user'}), 401
-
     current_user = User.query.filter_by(email=session['email']).first()
     user_to_follow = User.query.get_or_404(user_id)
 
@@ -329,7 +309,7 @@ pass
 # Injects the currently logged-in user (`current_user`) into all templates if an email exists in the session. 
 # Sets `current_user` to `None` for templates when no user is logged in.
 @app.context_processor
-def inject_current_user():
+def provide_user():
     if 'email' in session:
         current_user = User.query.filter_by(email=session['email']).first()
         return {'current_user': current_user}
@@ -346,15 +326,13 @@ pass
 @app.route('/my_posts', methods=['GET'])
 @login_required
 def my_posts():
-    if 'email' not in session:
-        return redirect('/login')
-
     user = User.query.filter_by(email=session['email']).first()
 
     # Fetch user's posts and comments
     user_posts = Post.query.filter_by(user_id=user.id).order_by(Post.created_at.desc()).all()
     user_comments = Comment.query.filter_by(user_id=user.id).order_by(Comment.created_at.desc()).all()
 
+    # Post the contents
     return render_template(
         'my_posts.html',
         user=user,
@@ -366,9 +344,6 @@ pass
 @app.route('/delete_post/<int:post_id>', methods=['DELETE'])
 @login_required
 def delete_post(post_id):
-    if 'email' not in session:
-        return jsonify({'error': 'Unauthorized access, cannot delete post.'}), 401
-
     user = User.query.filter_by(email=session['email']).first()
     post = Post.query.get_or_404(post_id)
 
