@@ -8,7 +8,6 @@ Brlapi==0.8.2
 cffi==1.14.5
 chardet==4.0.0
 click==8.1.7
-cockpit @ file:///builddir/build/BUILD/cockpit-311.2/tmp/wheel/cockpit-311.2-py3-none-any.whl
 cryptography==36.0.1
 cupshelpers==1.0
 dasbus==1.4
@@ -69,7 +68,6 @@ scour==0.38.1
 selinux==3.6
 sepolicy==3.6
 setools==4.4.4
-setroubleshoot @ file:///builddir/build/BUILD/setroubleshoot-3.3.32/src
 six==1.15.0
 sos==4.7.2
 SQLAlchemy==2.0.36
